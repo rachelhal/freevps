@@ -1,4 +1,3 @@
----
 version: 2
 
 references:
@@ -136,12 +135,15 @@ jobs:
           name: Prepare signing key
           command: |
             echo $GPG_PRIVATE_KEY |base64 --decode |gpg --yes --batch --import
+
       - run:
           name: Deploy to Clojars
           command: |
             export LEIN_GPG=/home/circleci/jackdaw/.circleci/bin/gpg
             export REAL_GPG=$(which gpg)
+
             lein do jar, pom, deploy clojars
+
   deploy_snapshot:
     <<: *deploy_config
     steps:
@@ -151,6 +153,7 @@ jobs:
           name: Deploy to Clojars
           command: |
             [ -z "$CLOJARS_USERNAME" ] || lein do jar, pom, deploy clojars
+
 workflows:
   version: 2
   build_and_test:
